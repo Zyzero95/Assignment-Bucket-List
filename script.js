@@ -2,8 +2,8 @@
 let bucketListItems = [];
 
 // Creating DOM Selectors
-const bucketlistSelector = document.querySelector(".bucketListing");
-const btnSubmit = document.querySelector("button");
+const bucketlistSelector = document.querySelector("#bucketListing");
+const btnSubmit = document.querySelector("#buttonSubmit");
 
 // Button Event Listener
 btnSubmit.addEventListener("click", (event) => {
@@ -29,16 +29,67 @@ function submitBucketListItem() {
     objHolder.Activity = activityName;
     objHolder.Category = activityCategory;
 
+    // renderBucketList();
+    addItem(objHolder);
+}
+
+function addItem(listItem) {
     // Add object to array
-    bucketListItems.push(objHolder);
+    bucketListItems.push(listItem);
+
+    let listData = document.createElement('li');
+
+    let listActivityText = document.createElement('p');
+    listActivityText.setAttribute("class", "list-activity-text");
+    listActivityText.innerHTML = listItem.Activity;
+    listData.appendChild(listActivityText);
+
+    let listCategoryText = document.createElement('p');
+    listCategoryText.setAttribute("class", "list-category-text");
+    listCategoryText.innerHTML = listItem.Category;
+    listData.appendChild(listCategoryText);
+
+    let checkBox = document.createElement('INPUT');
+    checkBox.setAttribute("type", "checkbox");
+    listData.appendChild(checkBox);
+
+    let editButton = document.createElement('button');
+    editButton.setAttribute("class", "edit-button");
+    editButton.innerHTML = "Edit";
+    listData.appendChild(editButton);
+
+    let removeButton = document.createElement('button');
+    removeButton.setAttribute("class", "remove-button");
+    removeButton.innerHTML = "Remove";
+    listData.appendChild(removeButton);
+
+    bucketlistSelector.appendChild(listData);
+
     console.log(bucketListItems);
-    // displayBucketList();
+    console.log(document.querySelector('ul#bucketListing').children);
 }
 
-// Render Bucket List array(bucketListItems)
-function renderBucketList() {
-
-    for(let i = 0; i < bucketListItems.length; i++){
-        
+// Event Delegation searching only for dynamically created buttons
+bucketlistSelector.addEventListener("click" , (event) => {
+    if(event.target.classList.contains('remove-button')){
+        removeItem(event.target);
     }
+    else if(event.target.classList.contains('edit-button')){
+        editItem(event.target);
+    }
+});
+
+// We change the text inside each p tag with the values from the form.
+function editItem(e){
+
+    const activityName = document.querySelector("#activityName").value.trim();
+    const activityCategory = document.querySelector("#activityCategory").value;
+
+    e.parentElement.children[0].innerHTML = activityName;
+    e.parentElement.children[1].innerHTML = activityCategory;
 }
+
+function removeItem(e){
+    e.parentElement.remove();
+}
+
