@@ -4,14 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bucket List</title>
+  <!-- Import script.js (defer downloads the script.js in parallel to parsing the page.)
+   Executes when the page has finished parsing.-->
   <script src="script.js" defer></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Header Section -->
   <header>
     <h1>Min Bucket List</h1>
   </header>
+  <!-- Main Section -->
   <main>
+    <!-- Form for filling Bucket List -->
     <form id="bucketForm">
       <input type="text" id="activityName" placeholder="Vad vill du göra?" required />
       <select id="activityCategory">
@@ -22,13 +27,9 @@
       </select>
       <button type="submit" id="buttonSubmit">Lägg till</button>
     </form>
+    <!-- Bucket List Sections -->
     <section id="bucketLists">
-      <!-- <table id="bucketListing">
-        <tr>
-          <th>Activity</th>
-          <th>Category</th>
-        </tr>
-      </table> -->
+      <!-- Render the bucket list dynamically with JavaScript -->
       <ul id="bucketListing">Activity - Category</ul>
     </section>
   </main>
