@@ -2,19 +2,39 @@
 body {
     font-family: Arial, sans-serif;
   }
+  h1 {
+    display: flex;
+    justify-content: center;
+  }
+  form{
+    display: flex;
+    justify-content: center;
+  }
   #bucketLists div {
     margin-bottom: 20px;
   }
   ul {
+    display: flex;
+    flex-direction: column;
     list-style-type: none;
     padding: 0;
   }
+  h2 {
+    align-self: center;
+  }
   li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin: 5px;
     padding: 5px 0;
   }
+  p {
+    margin-left: 5px;
+  }
   button {
-    margin-left: 10px;
+    margin: 10px;
+    border-radius: 15px;
+  }
+  input[type='checkbox']{
+    margin: 10px;
   }

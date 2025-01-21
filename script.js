@@ -23,13 +23,19 @@ bucketlistSelector.addEventListener("click" , (event) => {
     }
 });
 
+// Event delegation searching for dynamically created check boxes.
+bucketlistSelector.addEventListener("change", (event) => {
+    if(event.target.classList.contains('check-box')){
+        checkBoxChecked(event.target);
+    }
+});
+
 // Initialize data from local storage to empty array and render them on the webpage.
 function init() {
     
     if(localStorage.length !== 0){
 
         let storageParse;
-
         for(let i = 0; i < localStorage.length; i++){
             storageParse = localStorage.getItem(`ActivityLog ${i}`);
             bucketListItems.push(JSON.parse(storageParse)); 
@@ -38,6 +44,15 @@ function init() {
         for(let j = 0; j < bucketListItems.length; j++){
             addItem(bucketListItems[j]);
         }
+    }
+}
+
+// Save new data from inside the array to local storage.
+function saveToLocalStorage(array){
+    localStorage.clear();
+    sortAlphabetical();
+    for(let i = 0; i < array.length; i++){
+        localStorage.setItem(`ActivityLog ${i}`, JSON.stringify(array[i]));
     }
 }
 
@@ -54,7 +69,8 @@ function submitBucketListItem() {
     // Empty object for submit.
     let formValueObj = {
     Activity: "",
-    Category: ""
+    Category: "",
+    isChecked: false
     };
 
     // Assign values to object.
@@ -66,23 +82,30 @@ function submitBucketListItem() {
     addItem(formValueObj);
 }
 
-// Save new data from inside the array to local storage.
-function saveToLocalStorage(array){
-    localStorage.clear();
-    sortAlphabetical();
-    for(let i = 0; i < array.length; i++){
-        localStorage.setItem(`ActivityLog ${i}`, JSON.stringify(array[i]));
-    }
-}
-
+// Sort Bucket List aplhabetically per Category.
 function sortAlphabetical(){
-    bucketListItems.sort(function (a, b) {
-        if (a.Activity < b.Activity) {
-          return -1;
-        }
-        if (a.Activity > b.Activity) {
-          return 1;
-        }
+    
+    // We first sort the Activities alphabetically.
+    let sortedActivity = bucketListItems.sort(function (a, b){
+
+            if (a.Activity < b.Activity) {
+                return -1;
+              }
+              else if (a.Activity > b.Activity) {
+                return 1;
+              }
+        return 0;
+    });
+
+    // We use the sorted array and sort that one by Category alphabetically.
+    sortedActivity.sort(function (a, b) {
+
+            if (a.Category < b.Category) {
+                return -1;
+              }
+              else if (a.Category > b.Category) {
+                return 1;
+              }
         return 0;
       });
 }
@@ -105,6 +128,7 @@ function addItem(listItem) {
 
     let checkBox = document.createElement('INPUT');
     checkBox.setAttribute("type", "checkbox");
+    checkBox.setAttribute("class", "check-box");
     listData.appendChild(checkBox);
 
     let editButton = document.createElement('button');
@@ -116,6 +140,21 @@ function addItem(listItem) {
     removeButton.setAttribute("class", "remove-button");
     removeButton.innerHTML = "Remove";
     listData.appendChild(removeButton);
+
+    if(listCategoryText.innerHTML === "Hobby"){
+        listData.style.backgroundColor = "lightblue";
+    }
+    else if(listCategoryText.innerHTML === "Lärande"){
+        listData.style.backgroundColor = "lightgreen";
+    }
+    else if(listCategoryText.innerHTML === "Resor"){
+        listData.style.backgroundColor = "red";
+        listActivityText.style.color = "white";
+        listCategoryText.style.color = "white";
+    }
+    else {
+        listData.style.backgroundColor = "plum";
+    }
 
     // Add the HTML elements as children to the Bucket List Section.
     bucketlistSelector.appendChild(listData);
@@ -138,7 +177,6 @@ function editItem(e){
             bucketListItems[i].Category = activityCategory;
         }
     }
-    saveToLocalStorage(bucketListItems);
 
     // Change value of the two paragraphs we have created which will always be set on index 0 and 1.
     if(activityName === ""){
@@ -149,7 +187,7 @@ function editItem(e){
         e.parentElement.children[1].innerHTML = activityCategory;
     }
     
-    
+    saveToLocalStorage(bucketListItems);
 }
 
 // Removes the whole parent element of the target element(remove-button).
@@ -163,4 +201,32 @@ function removeItem(e){
     }
     saveToLocalStorage(bucketListItems);
     e.parentElement.remove();
+}
+
+// Event looking for it Checkbox is checked then change styling on Bucket List.
+function checkBoxChecked(e) {
+
+    if(e.checked ){
+        e.parentElement.style.textDecoration = 'line-through';
+        e.parentElement.style.backgroundColor = 'gray';
+        e.parentElement.children[0].color = 'black';
+        e.parentElement.children[1].color = 'black';
+        }
+    else {
+        e.parentElement.style.textDecoration = 'none';
+        if(e.parentElement.children[1].innerHTML === "Hobby"){
+            e.parentElement.style.backgroundColor = "lightblue";
+        }
+        else if(e.parentElement.children[1].innerHTML === "Lärande"){
+            e.parentElement.style.backgroundColor = "lightgreen";
+         }
+        else if(e.parentElement.children[1].innerHTML === "Resor"){
+            e.parentElement.style.backgroundColor = "red";
+            e.parentElement.children[0].color = 'white';
+            e.parentElement.children[1].color = 'white';
+        }
+        else {
+            e.parentElement.style.backgroundColor = "plum";
+        }
+    }
 }
